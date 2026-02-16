@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Inter
+- Font Author: undefined
+- Font Source: https://fonts.gstatic.com/s/inter/v19/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZhrib2Bg-4.ttf
+- Font License: undefined)
