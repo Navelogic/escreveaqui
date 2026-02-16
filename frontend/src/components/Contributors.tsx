@@ -15,15 +15,13 @@ export default function Contributors() {
     useEffect(() => {
         fetch("https://api.github.com/repos/Navelogic/escreveaqui/contributors")
             .then((res) => res.json())
-            // GitHub API returns an array on success, or object on error.
-            // We check if it is an array.
             .then((data) => {
                 if (Array.isArray(data)) {
                     setContributors(data);
                 }
             })
             .catch((err) => {
-                console.error("Failed to fetch contributors", err);
+                console.error("Falha ao buscar contribuidores", err);
             });
     }, []);
 
