@@ -1,0 +1,74 @@
+:root {
+    --color-bg: #f7f7f5;
+    --color-text: #1c1c1c;
+    --color-green-primary: #176B3A;
+    --color-green-flag: #009c3b;
+    --color-yellow-flag: #ffdf00;
+    --color-yellow-button: #F4B400;
+    --color-blue-flag: #002776;
+    --color-gray-100: #d1d1d1;
+    --color-gray-200: #ccc;
+    --color-gray-300: #999;
+    --color-gray-400: #888;
+    --color-gray-500: #666;
+    --color-gray-600: #555;
+    --color-gray-700: #444;
+    --color-gray-800: #333;
+    --color-selection: rgba(0, 156, 59, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-gray-100);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+    background-clip: padding-box;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-100) transparent;
+}
+
+::selection {
+    background-color: var(--color-selection);
+    color: var(--color-text);
+}
+
+::-moz-selection {
+    background-color: var(--color-selection);
+    color: var(--color-text);
+}
