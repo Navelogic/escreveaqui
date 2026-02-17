@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { EditorContainer, TextareaWrapper, StyledTextarea } from "./styles";
 import InsertionPoint from "../../components/InsertionPoint";
 
-const INACTIVITY_TIMEOUT = 2000; // 2 segundos sem digitar
+const INACTIVITY_TIMEOUT = 2000;
 
 
 export default function Editor() {
