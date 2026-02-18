@@ -1,74 +1,127 @@
-# escreve aqui 🇧🇷
+# Escreve Aqui 🇧🇷
 
-> **Texto online, anônimo e minimalista.**
-> *Open source e sem anúncios. Feito no Brasil.*
+> Texto online, anônimo e minimalista.\
+> Open source, sem anúncios e feito no Brasil.
+
+------------------------------------------------------------------------
 
 ![License](https://img.shields.io/github/license/Navelogic/escreveaqui?style=flat-square&color=009c3b)
 ![React](https://img.shields.io/badge/frontend-React-61DAFB?style=flat-square&logo=react&logoColor=black)
-![Spring Boot](https://img.shields.io/badge/backend-Spring%20Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
+![Spring
+Boot](https://img.shields.io/badge/backend-Spring%20Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
 
-O **escreveaqui** é uma ferramenta simples para criar e compartilhar textos rapidamente através de uma URL amigável. Focamos na privacidade e na simplicidade: sem rastreadores, sem cadastro e sem complicações.
+------------------------------------------------------------------------
+
+## 💡 Por que o Escreve Aqui existe?
+
+Muitas ferramentas de texto online são cheias de anúncios, rastreadores
+ou exigem cadastro. Precisavamos de uma ferramenta simples para criar e compartilhar textos rapidamente através de uma URL amigável.
+
+O **Escreve Aqui** nasceu para ser o oposto disso:
+
+-   Sem anúncios
+-   Sem cadastro
+-   Sem rastreadores
+
+Apenas um espaço simples para escrever e compartilhar.
+
+------------------------------------------------------------------------
+
+## 🎯 Filosofia do Projeto
+
+O Escreve Aqui é guiado por princípios claros:
+
+-   Simplicidade acima de tudo
+-   Código limpo
+-   Privacidade em primeiro lugar
+-   Comunidade aberta e respeitosa
+
+Qualquer nova funcionalidade deve respeitar esses princípios.
+
+------------------------------------------------------------------------
 
 ## 🚀 Tecnologias
 
-Este projeto é desenvolvido com tecnologias modernas e robustas:
-
 ### Frontend
-- **React** (Vite): Interface reativa e rápida.
-- **TypeScript**: Segurança de tipos e melhor experiência de desenvolvimento.
-- **Styled Components**: Estilização dinâmica e modular (CSS-in-JS).
-- **React Router**: Navegação SPA (Single Page Application).
+
+-   React (Vite)
+-   TypeScript
+-   Styled Components
+-   React Router
 
 ### Backend
-- **Spring Boot** (Java): API REST robusta e escalável.
 
-## 📦 Como Rodar o Projeto
+-   Spring Boot
+-   Java 25+
+
+------------------------------------------------------------------------
+
+## 📦 Como rodar localmente
 
 ### Pré-requisitos
-- Node.js (v18+)
-- Java (JDK 17+)
 
-### Frontend
-1. Acesse a pasta do frontend:
-   ```bash
-   cd frontend
-   ```
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-3. Inicie o servidor de desenvolvimento:
-   ```bash
-   npm run dev
-   ```
-   O projeto estará rodando em `http://localhost:5173`.
+-   Node.js 24+
+-   Java JDK 25+
 
-### Backend
-*(As instruções abaixo assumem uma estrutura padrão de projeto Spring Boot)*
+------------------------------------------------------------------------
 
-1. Acesse a pasta do backend (se disponível):
-   ```bash
-   cd backend
-   ```
-2. Execute a aplicação:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-   A API estará rodando geralmente em `http://localhost:8080`.
+### 🔹 Frontend
+
+``` bash
+cd frontend
+npm install
+npm run dev
+```
+
+A aplicação estará disponível em: http://localhost:5173
+
+------------------------------------------------------------------------
+
+### 🔹 Backend
+
+``` bash
+cd backend
+./mvnw spring-boot:run
+```
+
+API geralmente disponível em: http://localhost:8080
+
+------------------------------------------------------------------------
 
 ## 🤝 Contribuição
 
-Contribuições são muito bem-vindas! Se você tem ideias para melhorar o **escreveaqui**, sinta-se à vontade para:
+Contribuições são muito bem-vindas.
 
-1. Fazer um **Fork** do projeto.
-2. Criar uma **Branch** para sua feature (`git checkout -b feature/MinhaFeature`).
-3. Fazer o **Commit** (`git commit -m 'Adicionando MinhaFeature'`).
-4. Fazer o **Push** (`git push origin feature/MinhaFeature`).
-5. Abrir um **Pull Request**.
+Antes de contribuir:
+
+1.  Leia o [CONTRIBUTING.md](https://github.com/Navelogic/escreveaqui/blob/main/CONTRIBUTING.md)
+2.  Verifique issues existentes
+3.  Respeite o Code of Conduct
+4.  Mantenha o foco na simplicidade
+
+------------------------------------------------------------------------
+
+## 🔐 Privacidade
+
+O projeto é construído com foco em privacidade:
+
+-   Não exige cadastro
+-   Não utiliza rastreadores
+-   Não exibe anúncios
+
+------------------------------------------------------------------------
+
+## 📌 Status do Projeto
+
+🚧 Em desenvolvimento ativo
+
+------------------------------------------------------------------------
 
 ## 📄 Licença
 
-Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais
+detalhes.
 
----
-Feito com 💚 pela comunidade open source.
+------------------------------------------------------------------------
+
+Feito com 💚
