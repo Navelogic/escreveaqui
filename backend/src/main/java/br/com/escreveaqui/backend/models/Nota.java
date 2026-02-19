@@ -26,7 +26,6 @@ public class Nota {
     @Column(nullable = false, unique = true, length = 255)
     private String slug;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
 
