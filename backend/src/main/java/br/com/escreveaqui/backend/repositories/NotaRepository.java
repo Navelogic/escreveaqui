@@ -24,6 +24,4 @@ public interface NotaRepository extends JpaRepository<Nota, UUID> {
     int deleteOldNotes(@Param("dateTime") OffsetDateTime dateTime);
 
     boolean existsBySlug(String slug);
-
-
 }
