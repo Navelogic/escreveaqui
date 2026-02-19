@@ -14,15 +14,9 @@ public class UpsertNotaService {
 
     @Transactional
     public void execute(String slug, String content) {
-
-        Nota nota = notaRepository
-                .findBySlug(slug)
-                .orElseGet(() -> Nota.builder()
-                        .slug(slug)
-                        .build());
-
+        Nota nota = notaRepository.findBySlug(slug)
+                .orElseGet(() -> Nota.builder().slug(slug).build());
         nota.setContent(content);
-
         notaRepository.save(nota);
     }
 }
