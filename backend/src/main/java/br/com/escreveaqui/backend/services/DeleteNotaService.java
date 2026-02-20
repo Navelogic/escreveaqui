@@ -6,18 +6,18 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class DeleteNotaService {
 
     private final NotaRepository notaRepository;
 
+    // Roda às 3 da manhã todos os dias
     @Scheduled(cron = "0 0 3 * * ?")
     @Transactional
     public void execute() {
-        LocalDateTime limitDate = LocalDateTime.now().minusDays(30);
-        notaRepository.deleteByUpdatedAtBefore(limitDate);
+        var limitDate = java.time.OffsetDateTime.now().minusDays(30);
+        notaRepository.deleteOldNotes(limitDate);
+        // No futuro, gostaria de começar a logar as coisas aqui.
     }
 }
