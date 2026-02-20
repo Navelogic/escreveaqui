@@ -13,9 +13,23 @@ export default function Home() {
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!path.trim()) return;
-    navigate("/" + path);
+    const sanitizedPath = formatSlug(path);
+    if (!sanitizedPath) return;
+    navigate("/" + sanitizedPath);
   };
+
+  const formatSlug = (input: string) => {
+    return input
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") 
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  };
+
+
 
   return (
     <div className={styles.wrapper}>
