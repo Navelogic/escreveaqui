@@ -2,7 +2,7 @@
 
 > Texto online, anônimo e minimalista.\
 > Open source, sem anúncios e feito no Brasil.
-
+![logo do projeto](https://raw.githubusercontent.com/Navelogic/escreveaqui/refs/heads/main/doc/GitHub%20Social%20Preview.png)
 ------------------------------------------------------------------------
 
 ![License](https://img.shields.io/github/license/Navelogic/escreveaqui?style=flat-square&color=009c3b)
