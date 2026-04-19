@@ -1,167 +1,167 @@
 # 🤝 Contribuindo para o Escreve Aqui
 
-Obrigado por considerar contribuir com o **Escreve Aqui** 🇧🇷\
+Obrigado por considerar contribuir com o **Escreve Aqui** 🇧🇷  
 Queremos manter o projeto simples, organizado e acessível para todos.
 
-Este documento define como colaborar de forma eficiente.
-
-------------------------------------------------------------------------
+---
 
 ## 📌 Antes de começar
 
--   Leia o README
--   Verifique se já existe uma Issue relacionada
--   Mantenha o foco na simplicidade e minimalismo do projeto
+- Leia o [README](README.md) para entender o projeto
+- Verifique se já existe uma issue relacionada ao que você quer fazer
+- Mantenha o foco na simplicidade e no minimalismo
 
-------------------------------------------------------------------------
+---
 
 ## 🐛 Reportando Bugs
 
 Antes de abrir uma issue:
 
-1.  Verifique se o bug já foi reportado.
-2.  Certifique-se de que está usando a versão mais recente.
+1. Verifique se o bug já foi reportado
+2. Certifique-se de que está usando a versão mais recente
 
 Ao abrir uma issue, inclua:
 
--   Descrição clara do problema
--   Passos para reproduzir
--   Comportamento esperado
--   Prints (se aplicável)
--   Ambiente:
-    -   Sistema operacional
-    -   Versão do Node
-    -   Versão do Java
+- Descrição clara do problema
+- Passos para reproduzir
+- Comportamento esperado vs. comportamento atual
+- Prints ou vídeo (se aplicável)
+- Ambiente:
+  - Sistema operacional
+  - Versão do Node.js
+  - Versão do Java
+  - Navegador (para bugs de UI)
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Sugerindo Melhorias
 
 Para novas funcionalidades:
 
-1.  Abra uma Issue primeiro.
-2.  Explique:
-    -   Qual problema resolve
-    -   Por que é útil
-    -   Possível abordagem técnica (se souber)
+1. Abra uma issue primeiro
+2. Explique:
+   - Qual problema resolve
+   - Por que é útil para o projeto
+   - Possível abordagem técnica (se souber)
 
 Evite abrir Pull Request sem discussão prévia para features grandes.
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Como Contribuir
 
-### 1️⃣ Fork o projeto
+### 1. Fork o projeto
 
 Clique em **Fork** no GitHub.
 
-### 2️⃣ Clone seu fork
+### 2. Clone seu fork
 
-``` bash
+```bash
 git clone https://github.com/SEU-USUARIO/escreveaqui.git
 cd escreveaqui
 ```
 
-### 3️⃣ Crie uma branch
+### 3. Configure o ambiente
+
+Consulte o [README](README.md) para instalar as dependências e configurar as variáveis de ambiente.
+
+### 4. Crie uma branch
 
 Use o padrão:
 
-    feature/nome-da-feature
-    fix/nome-do-bug
-    docs/descricao
-    refactor/descricao
+```
+feature/nome-da-feature
+fix/nome-do-bug
+docs/descricao
+refactor/descricao
+```
 
 Exemplo:
 
-``` bash
+```bash
 git checkout -b feature/dark-mode
 ```
 
-------------------------------------------------------------------------
+---
 
 ## 🧱 Padrão de Commits
 
 Utilizamos **Conventional Commits**:
 
-    feat: adiciona modo escuro
-    fix: corrige erro de validação
-    docs: atualiza README
-    refactor: melhora estrutura do controller
-    test: adiciona testes para API
-    chore: atualização de dependências
-
-------------------------------------------------------------------------
-
-## 🧪 Executando o Projeto Localmente
-
-### Frontend
-
-``` bash
-cd frontend
-npm install
-npm run dev
+```
+feat: adiciona modo escuro
+fix: corrige erro de validação no slug
+docs: atualiza README com variáveis de ambiente
+refactor: simplifica lógica do UpsertNotaService
+test: adiciona testes para o endpoint de leitura
+chore: atualiza dependências do frontend
 ```
 
-### Backend
+---
 
-``` bash
-cd backend
-./mvnw spring-boot:run
-```
+## 🧪 Rodando o Projeto Localmente
 
-------------------------------------------------------------------------
+Consulte o [README](README.md#-como-rodar-localmente) para instruções completas de setup.
+
+---
 
 ## 🧼 Padrões de Código
 
 ### Frontend
 
--   TypeScript obrigatório
--   Componentes funcionais
--   Evitar lógica pesada em componentes
--   Manter minimalismo visual
+- **TypeScript** obrigatório — sem `any` sem justificativa
+- **Componentes funcionais** com hooks
+- **Tailwind CSS** para estilização — não adicionar CSS avulso sem necessidade
+- **Shadcn/UI** para componentes de interface — prefira os componentes existentes antes de criar novos
+- Lógica pesada fora dos componentes (hooks ou services)
+- Manter minimalismo visual — novas telas devem seguir o estilo existente
 
 ### Backend
 
--   Seguir padrão REST
--   Controllers finos
--   Lógica concentrada em services
--   Tratamento adequado de exceções
+- **Java 21** — sem features de preview sem aprovação prévia
+- Seguir padrão REST
+- Controllers finos — apenas recebem e devolvem dados
+- Lógica concentrada nos services
+- Tratamento de exceções via `GlobalExceptionHandler`
+- Logging com SLF4J (`@Slf4j`) — `log.debug` para fluxo normal, `log.info` para eventos de negócio, `log.error` para falhas
 
-------------------------------------------------------------------------
+---
 
 ## 🔎 Pull Requests
 
 Antes de abrir um PR:
 
--   [ ] Código compila
--   [ ] Testes passam
--   [ ] Não há erros de lint
--   [ ] Branch está atualizada com `main`
--   [ ] Descrição clara do que foi feito
+- [ ] Código compila sem erros
+- [ ] Não há erros de lint (`npm run lint` no frontend)
+- [ ] Branch está atualizada com `main`
+- [ ] Descrição clara do que foi feito e por quê
 
 Template sugerido:
 
-    ## O que foi feito?
+```markdown
+## O que foi feito?
 
-    ## Por que?
+## Por que?
 
-    ## Como testar?
+## Como testar?
 
-    ## Prints (se aplicável)
+## Prints (se aplicável)
+```
 
-------------------------------------------------------------------------
+---
 
 ## 📦 Escopo do Projeto
 
-O escreveaqui é:
+O Escreve Aqui é:
 
--   Minimalista
--   Sem anúncios
--   Sem cadastro
+- Minimalista
+- Sem autenticação
+- Sem anúncios
+- Sem rastreamento
 
-Evite sugestões que adicionem complexidade desnecessária.
+Evite sugestões que adicionem complexidade desnecessária ou que quebrem esses princípios.
 
-------------------------------------------------------------------------
+---
 
 ## 🔐 Segurança
 
@@ -169,21 +169,20 @@ Se encontrar uma vulnerabilidade, **não abra uma issue pública**.
 
 Envie um e-mail para: weslleysantoszbd@gmail.com
 
-------------------------------------------------------------------------
+---
 
 ## 🧭 Filosofia do Projeto
 
--   Simplicidade acima de tudo
--   Código limpo
--   Zero complexidade desnecessária
--   Transparência
--   Comunidade aberta e respeitosa
+- Simplicidade acima de tudo
+- Código limpo e legível
+- Zero complexidade desnecessária
+- Transparência
+- Comunidade aberta e respeitosa
 
-------------------------------------------------------------------------
+---
 
 ## 💚 Agradecimento
 
 Cada contribuição importa.
 
-Obrigado por ajudar a construir uma alternativa open source, brasileira
-e minimalista.
+Obrigado por ajudar a construir uma alternativa open source, brasileira e minimalista.

@@ -1,92 +1,147 @@
 # Escreve Aqui 🇧🇷
 
-> Texto online, anônimo e minimalista.\
-> Open source, sem anúncios e feito no Brasil.
+> Texto online, anônimo e minimalista.  
+> Open source, sem anúncios, feito no Brasil.
+
 ![logo do projeto](https://raw.githubusercontent.com/Navelogic/escreveaqui/refs/heads/main/doc/GitHub%20Social%20Preview.png)
-------------------------------------------------------------------------
+
+---
 
 ![License](https://img.shields.io/github/license/Navelogic/escreveaqui?style=flat-square&color=009c3b)
 ![React](https://img.shields.io/badge/frontend-React-61DAFB?style=flat-square&logo=react&logoColor=black)
-![Spring
-Boot](https://img.shields.io/badge/backend-Spring%20Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/backend-Spring%20Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white)
+![Java](https://img.shields.io/badge/java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
 
-------------------------------------------------------------------------
+---
 
 ## 💡 Por que o Escreve Aqui existe?
 
-Muitas ferramentas de texto online são cheias de anúncios, rastreadores
-ou exigem cadastro. Precisavamos de uma ferramenta simples para criar e compartilhar textos rapidamente através de uma URL amigável.
+Muitas ferramentas de texto online são cheias de anúncios, rastreadores ou exigem cadastro. Precisávamos de algo simples para criar e compartilhar textos rapidamente através de uma URL amigável.
 
 O **Escreve Aqui** nasceu para ser o oposto disso:
 
--   Sem anúncios
--   Sem cadastro
--   Sem rastreadores
+- Sem anúncios
+- Sem cadastro
+- Sem rastreadores
 
-Apenas um espaço simples para escrever e compartilhar.
+Apenas um espaço para escrever e compartilhar.
 
-------------------------------------------------------------------------
+---
 
 ## 🎯 Filosofia do Projeto
 
-O Escreve Aqui é guiado por princípios claros:
-
--   Simplicidade acima de tudo
--   Código limpo
--   Privacidade em primeiro lugar
--   Comunidade aberta e respeitosa
+- Simplicidade acima de tudo
+- Código limpo e legível
+- Privacidade em primeiro lugar
+- Comunidade aberta e respeitosa
 
 Qualquer nova funcionalidade deve respeitar esses princípios.
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Tecnologias
 
 ### Frontend
 
--   React (Vite)
--   TypeScript
--   Styled Components
--   React Router
+| Tecnologia | Versão | Finalidade |
+|---|---|---|
+| React | 19 | UI |
+| TypeScript | 5.9 | Tipagem |
+| Vite | 7 | Build |
+| Tailwind CSS | 3 | Estilização |
+| Shadcn/UI | — | Componentes |
+| React Router | 7 | Roteamento |
 
 ### Backend
 
--   Spring Boot
--   Java 25+
+| Tecnologia | Versão | Finalidade |
+|---|---|---|
+| Spring Boot | 4 | Framework web |
+| Java | 21 (LTS) | Linguagem |
+| PostgreSQL | — | Banco de dados |
+| Caffeine | — | Cache in-process |
+| HikariCP | — | Pool de conexões |
 
-------------------------------------------------------------------------
+---
 
 ## 📦 Como rodar localmente
 
 ### Pré-requisitos
 
--   Node.js 24+
--   Java JDK 25+
+- Node.js 20+
+- Java JDK 21+
+- PostgreSQL 14+
 
-------------------------------------------------------------------------
+---
 
-### 🔹 Frontend
+### Frontend
 
-``` bash
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-A aplicação estará disponível em: http://localhost:5173
+Disponível em: `http://localhost:5173`
 
-------------------------------------------------------------------------
+---
 
-### 🔹 Backend
+### Backend
 
-``` bash
+**1. Configure as variáveis de ambiente:**
+
+```bash
+export DB_HOST=localhost
+export DB_DATABASE=escreveaqui
+export DB_USERNAME=seu_usuario
+export DB_PASSWORD=sua_senha
+
+# Opcional — padrão: http://localhost:5173
+export ALLOWED_ORIGINS=https://escreveaqui.com.br
+```
+
+**2. Inicie a aplicação:**
+
+```bash
 cd backend
 ./mvnw spring-boot:run
 ```
 
-API geralmente disponível em: http://localhost:8080
+API disponível em: `http://localhost:8080`
 
-------------------------------------------------------------------------
+> **Dica:** crie um arquivo `.env` e exporte as variáveis antes de rodar, ou configure-as no seu ambiente de CI/CD.
+
+---
+
+## 🔌 API
+
+A documentação completa da API está em [doc/API.md](doc/API.md).
+
+Resumo dos endpoints:
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| `GET` | `/api/v1/notes/{slug}` | Lê uma nota pelo slug |
+| `PUT` | `/api/v1/notes/{slug}` | Cria ou atualiza uma nota |
+
+---
+
+## 🏗️ Arquitetura
+
+A documentação de arquitetura está em [doc/ARCHITECTURE.md](doc/ARCHITECTURE.md).
+
+Visão geral:
+
+```
+Frontend (React + Tailwind)
+    ↕ HTTP (axios)
+Backend (Spring Boot)
+    ↕ Caffeine (cache in-process, TTL 30s)
+    ↕ HikariCP (pool de conexões)
+PostgreSQL
+```
+
+---
 
 ## 🤝 Contribuição
 
@@ -94,34 +149,32 @@ Contribuições são muito bem-vindas.
 
 Antes de contribuir:
 
-1.  Leia o [CONTRIBUTING.md](https://github.com/Navelogic/escreveaqui/blob/main/CONTRIBUTING.md)
-2.  Verifique issues existentes
-3.  Respeite o Code of Conduct
-4.  Mantenha o foco na simplicidade
+1. Leia o [CONTRIBUTING.md](CONTRIBUTING.md)
+2. Verifique issues existentes antes de abrir uma nova
+3. Mantenha o foco na simplicidade
 
-------------------------------------------------------------------------
+---
 
 ## 🔐 Privacidade
 
-O projeto é construído com foco em privacidade:
+- Não exige cadastro
+- Não utiliza rastreadores
+- Não exibe anúncios
+- Notas são públicas — qualquer pessoa com a URL pode ler e editar
+- Notas inativas por 30 dias são removidas automaticamente
 
--   Não exige cadastro
--   Não utiliza rastreadores
--   Não exibe anúncios
-
-------------------------------------------------------------------------
+---
 
 ## 📌 Status do Projeto
 
 🚧 Em desenvolvimento ativo
 
-------------------------------------------------------------------------
+---
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais
-detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-------------------------------------------------------------------------
+---
 
-Feito com 💚
+Feito com 💚 no Brasil
