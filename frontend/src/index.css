@@ -1,74 +1,88 @@
-:root {
-    --color-bg: #f7f7f5;
-    --color-text: #1c1c1c;
-    --color-green-primary: #176B3A;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Cores da bandeira do Brasil */
     --color-green-flag: #009c3b;
     --color-yellow-flag: #ffdf00;
-    --color-yellow-button: #F4B400;
     --color-blue-flag: #002776;
-    --color-gray-100: #d1d1d1;
-    --color-gray-200: #ccc;
-    --color-gray-300: #999;
-    --color-gray-400: #888;
-    --color-gray-500: #666;
-    --color-gray-600: #555;
-    --color-gray-700: #444;
-    --color-gray-800: #333;
     --color-selection: rgba(0, 156, 59, 0.2);
+
+    /* Tema Shadcn — mapeado às cores brasileiras */
+    --background: 40 14% 97%;
+    --foreground: 0 0% 11%;
+
+    --primary: 148 65% 26%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 52 100% 50%;
+    --secondary-foreground: 0 0% 11%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 218 100% 23%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 148 65% 26%;
+
+    --radius: 0.375rem;
+  }
 }
 
-* {
+@layer base {
+  * {
+    @apply border-border;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
+  }
 
-html {
+  html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
+  }
 
-body {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
     overflow-x: hidden;
     line-height: 1.5;
-}
+  }
 
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
+  ::selection {
+    background-color: var(--color-selection);
+    color: hsl(var(--foreground));
+  }
 
-::-webkit-scrollbar-track {
+  ::-moz-selection {
+    background-color: var(--color-selection);
+    color: hsl(var(--foreground));
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
     background: transparent;
-}
+  }
 
-::-webkit-scrollbar-thumb {
-    background: var(--color-gray-100);
-    border-radius: 5px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-}
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-    background-clip: padding-box;
-}
-
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-100) transparent;
-}
-
-::selection {
-    background-color: var(--color-selection);
-    color: var(--color-text);
-}
-
-::-moz-selection {
-    background-color: var(--color-selection);
-    color: var(--color-text);
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
 }
