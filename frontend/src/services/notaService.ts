@@ -3,10 +3,9 @@ import type { Nota } from '../interface/nota';
 import type { NotaRequest } from '../interface/notaRequest';
 
 const api = axios.create({
-    baseURL: "https://estefana-tungstous-layton.ngrok-free.dev/api/v1/notes", 
+    baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api/v1/notes',
     headers: {
         'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true'
     }
 });
 
