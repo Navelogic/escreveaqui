@@ -66,9 +66,40 @@ Qualquer nova funcionalidade deve respeitar esses princípios.
 
 ## 📦 Como rodar localmente
 
-### Pré-requisitos
+### Com Docker (recomendado)
 
-- Node.js 20+
+A forma mais fácil de rodar o projeto completo:
+
+```bash
+# Clone o repositório
+git clone https://github.com/Navelogic/escreveaqui.git
+cd escreveaqui
+
+# Copie e configure as variáveis de ambiente
+cp .env.example .env
+
+# Suba todos os serviços
+docker compose up -d
+```
+
+Acesse:
+- **Frontend:** `http://localhost:3000`
+- **Backend:** `http://localhost:8080`
+- **PostgreSQL:** `localhost:5433`
+
+Para parar os serviços:
+
+```bash
+docker compose down
+```
+
+---
+
+### Sem Docker
+
+#### Pré-requisitos
+
+- Node.js 22+
 - Java JDK 21+
 - PostgreSQL 14+
 

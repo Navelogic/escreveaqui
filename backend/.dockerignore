@@ -1,0 +1,42 @@
+# Build artifacts
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Test files
+src/test/
+
+# Documentation
+*.md
+doc/
