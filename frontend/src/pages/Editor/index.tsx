@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
 import debounce from "lodash.debounce"
+import axios from "axios"
 import type { DebouncedFunc } from "lodash"
 
 const BR_COLORS = ["#009c3b", "#ffdf00", "#002776"]
@@ -25,20 +26,37 @@ export default function Editor() {
 
   useEffect(() => {
     if (!key) return
+
+    let controller: AbortController | null = null
+
     const fetchUpdates = async () => {
-      if (!isTyping) {
-        try {
-          const nota = await notaService.getBySlug(key)
-          if (nota?.content !== undefined && nota.content !== text) {
-            setText(nota.content)
-          }
-        } catch (err) {
+      if (isTyping || document.hidden) return
+      controller?.abort()
+      controller = new AbortController()
+      try {
+        const nota = await notaService.getBySlug(key, controller.signal)
+        if (nota?.content !== undefined && nota.content !== text) {
+          setText(nota.content)
+        }
+      } catch (err) {
+        if (!axios.isCancel(err)) {
           console.error("Erro no polling de atualização:", err)
         }
       }
     }
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) fetchUpdates()
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
     const interval = setInterval(fetchUpdates, 2000)
-    return () => clearInterval(interval)
+
+    return () => {
+      controller?.abort()
+      clearInterval(interval)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
   }, [key, isTyping, text])
 
   const saveToBackend: DebouncedFunc<(slug: string, content: string) => void> = useMemo(

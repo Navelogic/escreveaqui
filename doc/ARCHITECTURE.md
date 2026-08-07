@@ -85,7 +85,13 @@ setTimeout(2000ms)      ← após 2s sem digitar, isTyping = false
       │
       ▼
 polling ativo           ← GET a cada 2s para sincronizar com outros usuários
+                           (pausa quando a aba fica em segundo plano;
+                            busca imediata ao voltar o foco — Page Visibility API)
 ```
+
+Cada GET envia `If-None-Match` com o ETag da última resposta (derivado de
+`updatedAt`); se a nota não mudou, o backend responde `304 Not Modified` sem
+corpo, economizando banda no ciclo de polling.
 
 ### Cursor brasileiro
 
