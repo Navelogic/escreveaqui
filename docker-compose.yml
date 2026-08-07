@@ -63,8 +63,8 @@ services:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080/api/v1/notes}
     container_name: escreveaqui-frontend
     restart: unless-stopped
-    ports:
-      - "3000:80"
+    expose:
+      - "80"
     depends_on:
       backend:
         condition: service_healthy
