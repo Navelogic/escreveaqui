@@ -38,7 +38,7 @@ public class ReadNotaService {
                 .map(nota -> {
                     hitCounter.increment();
                     log.debug("Nota encontrada: slug='{}'", slug);
-                    return new NotaResponseDTO(nota.getSlug(), nota.getContent(), nota.getUpdatedAt());
+                    return new NotaResponseDTO(nota.slug(), nota.content(), nota.updatedAt());
                 })
                 .orElseGet(() -> {
                     missCounter.increment();
