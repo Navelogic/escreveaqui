@@ -1,6 +1,5 @@
 package br.com.escreveaqui.backend.services;
 
-import br.com.escreveaqui.backend.models.Nota;
 import br.com.escreveaqui.backend.repositories.NotaRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -40,11 +39,7 @@ public class UpsertNotaService {
     public void execute(String slug, String content) {
         String safeSlug = makeSlug(slug);
 
-        Nota nota = notaRepository.findBySlug(safeSlug)
-                .orElseGet(() -> Nota.builder().slug(safeSlug).build());
-        boolean isNew = nota.getId() == null;
-        nota.setContent(content);
-        notaRepository.save(nota);
+        boolean isNew = notaRepository.upsert(safeSlug, content);
 
         if (isNew) createCounter.increment();
         else updateCounter.increment();

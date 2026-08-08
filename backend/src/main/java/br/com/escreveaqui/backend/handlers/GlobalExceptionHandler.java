@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -43,17 +42,6 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problem.setTitle("Corpo da requisição inválido");
         problem.setDetail(errors);
-        return problem;
-    }
-
-
-    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-    public ProblemDetail handleOptimisticLock(ObjectOptimisticLockingFailureException ex) {
-        log.warn("Conflito de escrita concorrente: {}", ex.getMessage());
-
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
-        problem.setTitle("Conflito de edição");
-        problem.setDetail("A nota foi modificada por outra sessão. Tente novamente.");
         return problem;
     }
 

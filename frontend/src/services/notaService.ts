@@ -10,8 +10,8 @@ const api = axios.create({
 });
 
 export const notaService = {
-    async getBySlug(slug: string): Promise<Nota> {
-        const response = await api.get<Nota>(`/${slug.trim()}`);
+    async getBySlug(slug: string, signal?: AbortSignal): Promise<Nota> {
+        const response = await api.get<Nota>(`/${slug.trim()}`, { signal });
         return response.data;
     },
 
