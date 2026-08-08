@@ -36,13 +36,13 @@ public class NotaRepository {
 
     public boolean upsert(String slug, String content) {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject("""
-                INSERT INTO notes (slug, content)
-                VALUES (?, ?)
+                INSERT INTO notes (id, slug, content)
+                VALUES (?, ?, ?)
                 ON CONFLICT (slug) DO UPDATE
                     SET content = EXCLUDED.content,
                         updated_at = now()
                 RETURNING (xmax = 0) AS inserted
-                """, Boolean.class, slug, content));
+                """, Boolean.class, UUID.randomUUID(), slug, content));
     }
 
     public int deleteOldNotes(OffsetDateTime cutoff) {
