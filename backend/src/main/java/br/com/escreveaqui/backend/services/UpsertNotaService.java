@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
 import java.util.regex.Pattern;
@@ -35,7 +34,6 @@ public class UpsertNotaService {
     }
 
     @CacheEvict(value = "notas", key = "#slug")
-    @Transactional
     public void execute(String slug, String content) {
         String safeSlug = makeSlug(slug);
 
