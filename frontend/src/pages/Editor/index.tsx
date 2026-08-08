@@ -49,6 +49,7 @@ export default function Editor() {
       if (!document.hidden) fetchUpdates()
     }
 
+    fetchUpdates()
     document.addEventListener("visibilitychange", handleVisibilityChange)
     const interval = setInterval(fetchUpdates, 2000)
 
