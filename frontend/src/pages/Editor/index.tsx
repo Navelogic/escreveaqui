@@ -5,16 +5,20 @@ import { notaService } from "@/services/notaService"
 import debounce from "lodash.debounce"
 import axios from "axios"
 import type { DebouncedFunc } from "lodash"
+import { Check, LoaderCircle, X } from "lucide-react"
 
 const BR_COLORS = ["#009c3b", "#ffdf00", "#002776"]
 const INACTIVITY_TIMEOUT = 2000
 const AUTO_SAVE_DELAY = 1000
+
+type SaveStatus = "idle" | "saving" | "saved" | "error"
 
 export default function Editor() {
   const { key } = useParams<{ key: string }>()
   const [text, setText] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [caretIndex, setCaretIndex] = useState(0)
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -65,7 +69,11 @@ export default function Editor() {
       debounce((slug: string, content: string) => {
         notaService
           .upsert(slug, content)
-          .catch((err) => console.error("Falha ao salvar no banco:", err))
+          .then(() => setSaveStatus("saved"))
+          .catch((err) => {
+            setSaveStatus("error")
+            console.error("Falha ao salvar no banco:", err)
+          })
       }, AUTO_SAVE_DELAY),
     []
   )
@@ -86,7 +94,10 @@ export default function Editor() {
       setIsTyping(false)
     }, INACTIVITY_TIMEOUT)
 
-    if (key) saveToBackend(key, newText)
+    if (key) {
+      setSaveStatus("saving")
+      saveToBackend(key, newText)
+    }
   }
 
   useEffect(() => {
@@ -96,12 +107,33 @@ export default function Editor() {
 
   return (
     <div className="w-full h-screen bg-background">
+      {saveStatus !== "idle" && (
+        <div
+          aria-live="polite"
+          className={`pointer-events-none fixed right-5 top-4 z-10 flex items-center gap-1.5 text-sm ${
+            saveStatus === "error" ? "text-destructive" : "text-foreground/55"
+          }`}
+        >
+          {saveStatus === "saving" ? (
+            <LoaderCircle aria-hidden="true" className="size-4 animate-spin opacity-60" />
+          ) : saveStatus === "saved" ? (
+            <Check aria-hidden="true" className="size-4 stroke-[3] opacity-60" />
+          ) : (
+            <X aria-hidden="true" className="size-4 stroke-[3] opacity-60" />
+          )}
+          {saveStatus === "saving"
+            ? "Salvando…"
+            : saveStatus === "saved"
+              ? "Salvo"
+              : "Erro ao salvar"}
+        </div>
+      )}
       <Textarea
         value={text}
         onChange={handleChange}
         placeholder={`Escrevendo em: ${key}`}
         autoFocus
-        className="w-full h-full resize-none border-none rounded-none font-mono text-[18px] leading-6 p-5 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 [scrollbar-width:thin] [scrollbar-color:hsl(var(--border))_transparent]"
+        className="w-full h-full resize-none border-none rounded-none p-5 pt-14 font-mono text-[18px] leading-6 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/40 [scrollbar-width:thin] [scrollbar-color:hsl(var(--border))_transparent]"
         style={{ caretColor: BR_COLORS[caretIndex] }}
       />
     </div>
