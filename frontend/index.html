@@ -41,9 +41,56 @@
 
     <meta name="theme-color" content="#176B3A" />
 
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "escreve aqui",
+        "url": "https://escreveaqui.com.br",
+        "description": "Editor de texto online, anônimo e minimalista. Crie e compartilhe notas de texto rapidamente através de uma URL amigável, sem login, sem anúncios e sem rastreadores.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "BRL"
+        },
+        "inLanguage": "pt-BR",
+        "license": "https://github.com/Navelogic/escreveaqui/blob/main/LICENSE",
+        "author": {
+          "@type": "Organization",
+          "name": "Navelogic",
+          "url": "https://github.com/Navelogic/escreveaqui"
+        }
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="min-h-screen flex flex-col items-center justify-center px-4">
+        <div class="w-full max-w-md space-y-6">
+          <div class="space-y-1">
+            <h1 class="font-mono text-4xl font-bold tracking-tight">
+              escreve <span class="text-primary">aqui</span>
+            </h1>
+            <p class="text-sm text-muted-foreground">
+              Editor de texto online, anônimo e minimalista. Crie e compartilhe notas de
+              texto rapidamente através de uma URL amigável — sem login, sem anúncios e
+              sem rastreadores.
+              <a
+                href="https://github.com/Navelogic/escreveaqui"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline underline-offset-4"
+                >Código aberto</a
+              >
+              • Feito no Brasil 🇧🇷
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
