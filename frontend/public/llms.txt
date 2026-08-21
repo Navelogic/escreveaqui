@@ -1,0 +1,16 @@
+# Escreve Aqui
+
+> Editor de texto online, anônimo e minimalista, sem anúncios e sem rastreadores. Projeto brasileiro e open source.
+
+O Escreve Aqui é uma ferramenta simples para criar e compartilhar textos rapidamente através de uma URL amigável (`escreveaqui.com.br/sua-nota`), sem necessidade de login ou cadastro. Não coletamos dados pessoais; o conteúdo é salvo automaticamente e fica acessível a qualquer pessoa que tenha o link da nota — por isso, páginas de notas individuais não são indexadas.
+
+## Documentação
+
+- [README](https://github.com/Navelogic/escreveaqui/blob/main/README.md): visão geral, stack e como rodar o projeto localmente
+- [Arquitetura](https://github.com/Navelogic/escreveaqui/blob/main/doc/ARCHITECTURE.md): decisões de arquitetura do projeto
+- [API](https://github.com/Navelogic/escreveaqui/blob/main/doc/API.md): documentação dos endpoints da API
+- [Como contribuir](https://github.com/Navelogic/escreveaqui/blob/main/CONTRIBUTING.md): guia de contribuição
+
+## Repositório
+
+- [GitHub](https://github.com/Navelogic/escreveaqui): código-fonte completo (licença MIT)

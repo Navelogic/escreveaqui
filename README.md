@@ -14,7 +14,7 @@
 
 ---
 
-## 💡 Por que o Escreve Aqui existe?
+## Por que o Escreve Aqui existe?
 
 Muitas ferramentas de texto online são cheias de anúncios, rastreadores ou exigem cadastro. Precisávamos de algo simples para criar e compartilhar textos rapidamente através de uma URL amigável.
 
@@ -28,14 +28,12 @@ Apenas um espaço para escrever e compartilhar.
 
 ---
 
-## 🎯 Filosofia do Projeto
+## Filosofia do Projeto
 
 - Simplicidade acima de tudo
 - Código limpo e legível
 - Privacidade em primeiro lugar
 - Comunidade aberta e respeitosa
-
-Qualquer nova funcionalidade deve respeitar esses princípios.
 
 ---
 
@@ -43,28 +41,27 @@ Qualquer nova funcionalidade deve respeitar esses princípios.
 
 ### Frontend
 
-| Tecnologia | Versão | Finalidade |
-|---|---|---|
-| React | 19 | UI |
-| TypeScript | 5.9 | Tipagem |
-| Vite | 7 | Build |
-| Tailwind CSS | 3 | Estilização |
-| Shadcn/UI | — | Componentes |
-| React Router | 7 | Roteamento |
+| Tecnologia | Versão |
+|---|---|
+| React | 19 |
+| TypeScript | 5.9 |
+| Vite | 7 |
+| Tailwind CSS | 3 |
+| Shadcn/UI | Base UI |
 
 ### Backend
 
-| Tecnologia | Versão | Finalidade |
-|---|---|---|
-| Spring Boot | 4 | Framework web |
-| Java | 21 (LTS) | Linguagem |
-| PostgreSQL | — | Banco de dados |
-| Caffeine | — | Cache in-process |
-| HikariCP | — | Pool de conexões |
+| Tecnologia | Versão |
+|---|---|
+| Spring Boot | 4 |
+| Java | 21 (LTS) |
+| PostgreSQL | — |
+| Caffeine | — |
+| HikariCP | — |
 
 ---
 
-## 📦 Como rodar localmente
+## Como rodar localmente
 
 ### Com Docker (recomendado)
 
@@ -140,11 +137,10 @@ cd backend
 
 API disponível em: `http://localhost:8080`
 
-> **Dica:** crie um arquivo `.env` e exporte as variáveis antes de rodar, ou configure-as no seu ambiente de CI/CD.
 
 ---
 
-## 🔌 API
+## API
 
 A documentação completa da API está em [doc/API.md](doc/API.md).
 
@@ -157,24 +153,7 @@ Resumo dos endpoints:
 
 ---
 
-## 🏗️ Arquitetura
-
-A documentação de arquitetura está em [doc/ARCHITECTURE.md](doc/ARCHITECTURE.md).
-
-Visão geral:
-
-```
-Frontend (React + Tailwind)
-    ↕ HTTP (axios)
-Backend (Spring Boot)
-    ↕ Caffeine (cache in-process, TTL 30s)
-    ↕ HikariCP (pool de conexões)
-PostgreSQL
-```
-
----
-
-## 🤝 Contribuição
+## Contribuição
 
 Contribuições são muito bem-vindas.
 
@@ -183,22 +162,6 @@ Antes de contribuir:
 1. Leia o [CONTRIBUTING.md](CONTRIBUTING.md)
 2. Verifique issues existentes antes de abrir uma nova
 3. Mantenha o foco na simplicidade
-
----
-
-## 🔐 Privacidade
-
-- Não exige cadastro
-- Não utiliza rastreadores
-- Não exibe anúncios
-- Notas são públicas — qualquer pessoa com a URL pode ler e editar
-- Notas inativas por 30 dias são removidas automaticamente
-
----
-
-## 📌 Status do Projeto
-
-🚧 Em desenvolvimento ativo
 
 ---
 

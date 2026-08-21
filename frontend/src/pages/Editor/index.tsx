@@ -105,6 +105,17 @@ export default function Editor() {
     document.title = titleText ? `${titleText} | escreveaqui` : "escreveaqui"
   }, [key])
 
+  useEffect(() => {
+    // Notas são acessíveis a qualquer pessoa com a URL (ver Política de Privacidade),
+    // então páginas individuais não devem ser indexadas por buscadores.
+    const robotsMeta = document.querySelector('meta[name="robots"]')
+    const previousContent = robotsMeta?.getAttribute("content") ?? "index, follow"
+    robotsMeta?.setAttribute("content", "noindex, follow")
+    return () => {
+      robotsMeta?.setAttribute("content", previousContent)
+    }
+  }, [])
+
   return (
     <div className="w-full h-screen bg-background">
       {saveStatus !== "idle" && (
