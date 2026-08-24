@@ -2,6 +2,7 @@ package br.com.escreveaqui.backend.services;
 
 import br.com.escreveaqui.backend.dtos.NotaResponseDTO;
 import br.com.escreveaqui.backend.repositories.NotaRepository;
+import br.com.escreveaqui.backend.utils.SlugUtils;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -31,19 +32,20 @@ public class ReadNotaService {
                 .register(registry);
     }
 
-    @Cacheable(value = "notas", key = "#slug")
+    @Cacheable(value = "notas", key = "T(br.com.escreveaqui.backend.utils.SlugUtils).format(#slug)")
     @Transactional(readOnly = true)
     public NotaResponseDTO execute(String slug) {
-        return notaRepository.findBySlug(slug)
+        String safeSlug = SlugUtils.format(slug);
+        return notaRepository.findBySlug(safeSlug)
                 .map(nota -> {
                     hitCounter.increment();
-                    log.debug("Nota encontrada: slug='{}'", slug);
+                    log.debug("Nota encontrada: slug='{}'", safeSlug);
                     return new NotaResponseDTO(nota.slug(), nota.content(), nota.updatedAt());
                 })
                 .orElseGet(() -> {
                     missCounter.increment();
-                    log.debug("Nota não encontrada, retornando vazia: slug='{}'", slug);
-                    return new NotaResponseDTO(slug, "", OffsetDateTime.now());
+                    log.debug("Nota não encontrada, retornando vazia: slug='{}'", safeSlug);
+                    return new NotaResponseDTO(safeSlug, "", OffsetDateTime.now());
                 });
     }
 }
