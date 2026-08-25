@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import { useState, useEffect, useRef, useMemo } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
@@ -118,6 +118,12 @@ export default function Editor() {
 
   return (
     <div className="w-full h-screen bg-background">
+      <Link
+        to="/"
+        className="fixed left-5 top-4 z-10 font-mono text-sm text-foreground/55 hover:text-foreground transition-colors"
+      >
+        escreveaqui.com.br
+      </Link>
       {saveStatus !== "idle" && (
         <div
           aria-live="polite"
