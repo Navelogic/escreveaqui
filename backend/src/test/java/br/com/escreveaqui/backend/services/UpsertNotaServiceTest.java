@@ -19,13 +19,16 @@ class UpsertNotaServiceTest {
     @Mock
     private NotaRepository notaRepository;
 
+    @Mock
+    private SseService sseService;
+
     private MeterRegistry meterRegistry;
     private UpsertNotaService upsertNotaService;
 
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        upsertNotaService = new UpsertNotaService(notaRepository, meterRegistry);
+        upsertNotaService = new UpsertNotaService(notaRepository, sseService, meterRegistry);
     }
 
     @Test
