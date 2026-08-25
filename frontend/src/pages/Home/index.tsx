@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Modal from "@/components/Modal"
 import Contributors from "@/components/Contributors"
+import { formatSlug } from "@/lib/utils"
 
 export default function Home() {
   const [path, setPath] = useState("")
@@ -16,16 +17,6 @@ export default function Home() {
     if (!sanitizedPath) return
     navigate("/" + sanitizedPath)
   }
-
-  const formatSlug = (input: string) =>
-    input
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4">
