@@ -41,12 +41,16 @@ export default function Editor() {
     return () => clearInterval(interval)
   }, [])
 
+  const isTypingRef = useRef(isTyping)
+  useEffect(() => {
+    isTypingRef.current = isTyping
+  }, [isTyping])
+
+  // 1. Busca inicial da nota (executa apenas uma vez ao montar ou mudar de slug)
   useEffect(() => {
     if (!key) return
-
     let isMounted = true
 
-    // Busca inicial do conteúdo da nota
     notaService.getBySlug(key)
       .then((nota) => {
         if (isMounted && nota?.content !== undefined) {
@@ -57,14 +61,22 @@ export default function Editor() {
         console.error("Erro na busca inicial da nota:", err)
       })
 
-    // Conexão SSE para atualizações em tempo real
+    return () => {
+      isMounted = false
+    }
+  }, [key])
+
+  // 2. Conexão SSE para atualizações remotas em tempo real (não resseta ao digitar)
+  useEffect(() => {
+    if (!key) return
+
     const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080/api/v1/notes"
     const sseUrl = `${baseUrl}/${encodeURIComponent(key)}/stream`
     const eventSource = new EventSource(sseUrl)
 
     eventSource.addEventListener("nota-update", (event: MessageEvent) => {
       const newContent = event.data
-      if (isMounted && !isTyping && newContent !== text) {
+      if (!isTypingRef.current) {
         setText(newContent)
       }
     })
@@ -74,10 +86,9 @@ export default function Editor() {
     }
 
     return () => {
-      isMounted = false
       eventSource.close()
     }
-  }, [key, isTyping, text])
+  }, [key])
 
   const saveToBackend: DebouncedFunc<(slug: string, content: string) => void> = useMemo(
     () =>
