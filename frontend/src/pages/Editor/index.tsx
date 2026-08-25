@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { useState, useEffect, useRef, useMemo } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
