@@ -5,6 +5,7 @@ import br.com.escreveaqui.backend.dtos.NotaResponseDTO;
 import br.com.escreveaqui.backend.services.ReadNotaService;
 import br.com.escreveaqui.backend.services.SseService;
 import br.com.escreveaqui.backend.services.UpsertNotaService;
+import br.com.escreveaqui.backend.utils.SlugUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,11 +28,9 @@ public class NotaController {
     private final UpsertNotaService upsertService;
     private final SseService sseService;
 
-    private static final String SLUG_REGEX = "^[A-Za-z0-9_\\s-]+$";
-
     @GetMapping(value = "/{slug}", produces = "application/json")
     public ResponseEntity<NotaResponseDTO> read(
-            @PathVariable @Pattern(regexp = SLUG_REGEX) String slug,
+            @PathVariable @Pattern(regexp = SlugUtils.SLUG_REGEX) String slug,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -48,7 +47,7 @@ public class NotaController {
 
     @GetMapping(value = "/{slug}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream(
-            @PathVariable @Pattern(regexp = SLUG_REGEX) String slug
+            @PathVariable @Pattern(regexp = SlugUtils.SLUG_REGEX) String slug
     ) {
         return sseService.subscribe(slug);
     }
@@ -56,7 +55,7 @@ public class NotaController {
     @PutMapping(value = "/{slug}", consumes = "application/json")
     public ResponseEntity<Void> upsert(
             @PathVariable
-            @Pattern(regexp = SLUG_REGEX) String slug,
+            @Pattern(regexp = SlugUtils.SLUG_REGEX) String slug,
             @RequestBody
             @Valid NotaRequestDTO request
     ) {
