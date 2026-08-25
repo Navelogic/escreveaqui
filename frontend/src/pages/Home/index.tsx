@@ -41,13 +41,21 @@ export default function Home() {
         <Contributors />
 
         <form onSubmit={handleSubmit} className="flex items-center">
-          <span className="flex h-10 items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground whitespace-nowrap select-none">
+          <label htmlFor="note-slug" className="sr-only">
+            Nome da nota
+          </label>
+          <span
+            id="note-slug-prefix"
+            className="flex h-10 items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground whitespace-nowrap select-none"
+          >
             {window.location.host}/
           </span>
           <Input
+            id="note-slug"
             value={path}
             onChange={(e) => setPath(e.target.value)}
             placeholder="minha-nota"
+            aria-describedby="note-slug-prefix"
             className="rounded-none border-x-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-ring"
           />
           <Button type="submit" className="rounded-l-none font-mono">

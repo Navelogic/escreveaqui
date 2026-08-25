@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    color-scheme: light dark;
+
     /* Cores da bandeira do Brasil */
     --color-green-flag: #009c3b;
     --color-yellow-flag: #ffdf00;
@@ -34,6 +36,63 @@
     --ring: 148 65% 26%;
 
     --radius: 0.375rem;
+  }
+
+  /* Modo escuro automático, seguindo a preferência do sistema operacional */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-selection: rgba(0, 156, 59, 0.35);
+
+      --background: 150 10% 7%;
+      --foreground: 40 10% 95%;
+
+      --primary: 142 50% 45%;
+      --primary-foreground: 150 15% 8%;
+
+      --secondary: 48 90% 55%;
+      --secondary-foreground: 40 10% 10%;
+
+      --muted: 150 8% 14%;
+      --muted-foreground: 150 6% 62%;
+
+      --accent: 217 85% 62%;
+      --accent-foreground: 220 60% 10%;
+
+      --destructive: 0 72% 55%;
+      --destructive-foreground: 0 0% 100%;
+
+      --border: 150 8% 20%;
+      --input: 150 8% 20%;
+      --ring: 142 50% 45%;
+    }
+  }
+
+  /* Alternância manual via classe .dark (mesma estratégia já configurada em tailwind.config.js),
+     para quando um seletor de tema for adicionado no futuro. */
+  .dark {
+    --color-selection: rgba(0, 156, 59, 0.35);
+
+    --background: 150 10% 7%;
+    --foreground: 40 10% 95%;
+
+    --primary: 142 50% 45%;
+    --primary-foreground: 150 15% 8%;
+
+    --secondary: 48 90% 55%;
+    --secondary-foreground: 40 10% 10%;
+
+    --muted: 150 8% 14%;
+    --muted-foreground: 150 6% 62%;
+
+    --accent: 217 85% 62%;
+    --accent-foreground: 220 60% 10%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 8% 20%;
+    --input: 150 8% 20%;
+    --ring: 142 50% 45%;
   }
 }
 
