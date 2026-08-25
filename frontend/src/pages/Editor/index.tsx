@@ -132,6 +132,12 @@ export default function Editor() {
 
   return (
     <div className="w-full h-screen bg-background">
+      <Link
+        to="/"
+        className="fixed left-5 top-4 z-10 font-mono text-sm text-foreground/55 hover:text-foreground transition-colors"
+      >
+        escreveaqui.com.br
+      </Link>
       {saveStatus !== "idle" && (
         <div
           aria-live="polite"
