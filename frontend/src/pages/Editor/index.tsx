@@ -4,7 +4,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
 import { formatSlug } from "@/lib/utils"
 import debounce from "lodash.debounce"
-import axios from "axios"
 import type { DebouncedFunc } from "lodash"
 import { Check, LoaderCircle, X } from "lucide-react"
 
@@ -45,36 +44,38 @@ export default function Editor() {
   useEffect(() => {
     if (!key) return
 
-    let controller: AbortController | null = null
+    let isMounted = true
 
-    const fetchUpdates = async () => {
-      if (isTyping || document.hidden) return
-      controller?.abort()
-      controller = new AbortController()
-      try {
-        const nota = await notaService.getBySlug(key, controller.signal)
-        if (nota?.content !== undefined && nota.content !== text) {
+    // Busca inicial do conteúdo da nota
+    notaService.getBySlug(key)
+      .then((nota) => {
+        if (isMounted && nota?.content !== undefined) {
           setText(nota.content)
         }
-      } catch (err) {
-        if (!axios.isCancel(err)) {
-          console.error("Erro no polling de atualização:", err)
-        }
+      })
+      .catch((err) => {
+        console.error("Erro na busca inicial da nota:", err)
+      })
+
+    // Conexão SSE para atualizações em tempo real
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080/api/v1/notes"
+    const sseUrl = `${baseUrl}/${encodeURIComponent(key)}/stream`
+    const eventSource = new EventSource(sseUrl)
+
+    eventSource.addEventListener("nota-update", (event: MessageEvent) => {
+      const newContent = event.data
+      if (isMounted && !isTyping && newContent !== text) {
+        setText(newContent)
       }
-    }
+    })
 
-    const handleVisibilityChange = () => {
-      if (!document.hidden) fetchUpdates()
+    eventSource.onerror = (err) => {
+      console.debug("Conexão SSE reconectando...", err)
     }
-
-    fetchUpdates()
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    const interval = setInterval(fetchUpdates, 2000)
 
     return () => {
-      controller?.abort()
-      clearInterval(interval)
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      isMounted = false
+      eventSource.close()
     }
   }, [key, isTyping, text])
 
