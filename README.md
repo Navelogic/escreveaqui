@@ -1,4 +1,4 @@
-# Escreve Aqui 🇧🇷
+# Escreve Aqui
 
 > Texto online, anônimo e minimalista.  
 > Open source, sem anúncios, feito no Brasil.
@@ -21,7 +21,7 @@ Muitas ferramentas de texto online são cheias de anúncios, rastreadores ou exi
 O **Escreve Aqui** nasceu para ser o oposto disso:
 
 - Sem anúncios
-- Sem cadastro
+- Sem cadastro*
 - Sem rastreadores
 
 Apenas um espaço para escrever e compartilhar.
@@ -37,7 +37,19 @@ Apenas um espaço para escrever e compartilhar.
 
 ---
 
-## 🚀 Tecnologias
+## Discussões
+
+Neste repositório, você encontrará categorias para conversas sobre o Escreve Aqui. Sinta-se à vontade para compartilhar comentários, discutir tópicos com outros membros da comunidade ou fazer perguntas.
+
+| **Categorias** | **Sobre** 	|
+|---	|---	|
+| 📣 [Comunicados](https://github.com/Navelogic/escreveaqui/discussions/categories/comunicados) | Atualizações dos responsáveis pelo projeto |
+| 💬 [Em geral](https://github.com/Navelogic/escreveaqui/discussions/categories/em-geral) | Converse sobre tudo e qualquer coisa aqui |
+| 💡 [Ideias](https://github.com/Navelogic/escreveaqui/discussions/categories/ideias) | Compartilhe ideias para novos recursos |
+| 🙏 [Perguntas e Respostas](https://github.com/Navelogic/escreveaqui/discussions/categories/perguntas-e-respostas) | Peça ajuda à comunidade |
+| 🗳️ [Pesquisas e Competições](https://github.com/Navelogic/escreveaqui/discussions/categories/pesquisas-e-competi%C3%A7%C3%B5es) | Faça uma votação com a comunidade |
+
+## Tecnologias
 
 ### Frontend
 
