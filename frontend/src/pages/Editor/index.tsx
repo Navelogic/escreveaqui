@@ -1,7 +1,8 @@
-import { useParams, Link } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { useState, useEffect, useRef, useMemo } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
+import { formatSlug } from "@/lib/utils"
 import debounce from "lodash.debounce"
 import axios from "axios"
 import type { DebouncedFunc } from "lodash"
@@ -15,11 +16,24 @@ type SaveStatus = "idle" | "saving" | "saved" | "error"
 
 export default function Editor() {
   const { key } = useParams<{ key: string }>()
+  const navigate = useNavigate()
   const [text, setText] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [caretIndex, setCaretIndex] = useState(0)
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (!key) return
+    const formattedKey = formatSlug(key)
+    if (!formattedKey) {
+      navigate("/", { replace: true })
+      return
+    }
+    if (formattedKey !== key) {
+      navigate("/" + formattedKey, { replace: true })
+    }
+  }, [key, navigate])
 
   useEffect(() => {
     const interval = setInterval(() => {
