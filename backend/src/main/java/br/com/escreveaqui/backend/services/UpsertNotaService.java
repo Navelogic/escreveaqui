@@ -13,11 +13,13 @@ import org.springframework.stereotype.Service;
 public class UpsertNotaService {
 
     private final NotaRepository notaRepository;
+    private final SseService sseService;
     private final Counter createCounter;
     private final Counter updateCounter;
 
-    public UpsertNotaService(NotaRepository notaRepository, MeterRegistry registry) {
+    public UpsertNotaService(NotaRepository notaRepository, SseService sseService, MeterRegistry registry) {
         this.notaRepository = notaRepository;
+        this.sseService = sseService;
         this.createCounter = Counter.builder("notes.upsert")
                 .tag("operation", "create")
                 .description("Notas criadas")
@@ -33,6 +35,7 @@ public class UpsertNotaService {
         String safeSlug = SlugUtils.format(slug);
 
         boolean isNew = notaRepository.upsert(safeSlug, content);
+        sseService.notify(safeSlug, content);
 
         if (isNew) createCounter.increment();
         else updateCounter.increment();

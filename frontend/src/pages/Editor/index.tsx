@@ -4,7 +4,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
 import { formatSlug } from "@/lib/utils"
 import debounce from "lodash.debounce"
-import axios from "axios"
 import type { DebouncedFunc } from "lodash"
 import { Check, LoaderCircle, X } from "lucide-react"
 
@@ -42,41 +41,54 @@ export default function Editor() {
     return () => clearInterval(interval)
   }, [])
 
+  const isTypingRef = useRef(isTyping)
+  useEffect(() => {
+    isTypingRef.current = isTyping
+  }, [isTyping])
+
+  // 1. Busca inicial da nota (executa apenas uma vez ao montar ou mudar de slug)
+  useEffect(() => {
+    if (!key) return
+    let isMounted = true
+
+    notaService.getBySlug(key)
+      .then((nota) => {
+        if (isMounted && nota?.content !== undefined) {
+          setText(nota.content)
+        }
+      })
+      .catch((err) => {
+        console.error("Erro na busca inicial da nota:", err)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [key])
+
+  // 2. Conexão SSE para atualizações remotas em tempo real (não resseta ao digitar)
   useEffect(() => {
     if (!key) return
 
-    let controller: AbortController | null = null
+    const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080/api/v1/notes"
+    const sseUrl = `${baseUrl}/${encodeURIComponent(key)}/stream`
+    const eventSource = new EventSource(sseUrl)
 
-    const fetchUpdates = async () => {
-      if (isTyping || document.hidden) return
-      controller?.abort()
-      controller = new AbortController()
-      try {
-        const nota = await notaService.getBySlug(key, controller.signal)
-        if (nota?.content !== undefined && nota.content !== text) {
-          setText(nota.content)
-        }
-      } catch (err) {
-        if (!axios.isCancel(err)) {
-          console.error("Erro no polling de atualização:", err)
-        }
+    eventSource.addEventListener("nota-update", (event: MessageEvent) => {
+      const newContent = event.data
+      if (!isTypingRef.current) {
+        setText(newContent)
       }
-    }
+    })
 
-    const handleVisibilityChange = () => {
-      if (!document.hidden) fetchUpdates()
+    eventSource.onerror = (err) => {
+      console.debug("Conexão SSE reconectando...", err)
     }
-
-    fetchUpdates()
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    const interval = setInterval(fetchUpdates, 2000)
 
     return () => {
-      controller?.abort()
-      clearInterval(interval)
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      eventSource.close()
     }
-  }, [key, isTyping, text])
+  }, [key])
 
   const saveToBackend: DebouncedFunc<(slug: string, content: string) => void> = useMemo(
     () =>
