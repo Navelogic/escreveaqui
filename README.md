@@ -161,6 +161,7 @@ Resumo dos endpoints:
 | Método | Endpoint | Descrição |
 |---|---|---|
 | `GET` | `/api/v1/notes/{slug}` | Lê uma nota pelo slug |
+| `GET` | `/api/v1/notes/{slug}/stream` | Abre conexão SSE para atualizações em tempo real |
 | `PUT` | `/api/v1/notes/{slug}` | Cria ou atualiza uma nota |
 
 ---
