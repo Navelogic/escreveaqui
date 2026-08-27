@@ -7,14 +7,13 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
-    container_name: escreveaqui-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_DATABASE:-escreveaqui}
     ports:
-      - "5433:5432"
+      - "${POSTGRES_HOST_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -31,7 +30,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: escreveaqui-backend
     restart: unless-stopped
     environment:
       DB_HOST: postgres
@@ -41,7 +39,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost}
     ports:
-      - "8080:8080"
+      - "${BACKEND_HOST_PORT:-8080}:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -61,7 +59,6 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080/api/v1/notes}
-    container_name: escreveaqui-frontend
     restart: unless-stopped
     expose:
       - "80"
