@@ -1,15 +1,16 @@
 # 🤝 Contribuindo para o Escreve Aqui
 
-Obrigado por considerar contribuir com o **Escreve Aqui** 🇧🇷  
+Obrigado por considerar contribuir com o **Escreve Aqui**
 Queremos manter o projeto simples, organizado e acessível para todos.
 
 ---
 
 ## 📌 Antes de começar
 
-- Leia o [README](README.md) para entender o projeto
-- Verifique se já existe uma issue relacionada ao que você quer fazer
-- Mantenha o foco na simplicidade e no minimalismo
+- Leia o [README](README.md) para entender o projeto.
+- Verifique se já existe uma issue relacionada ao que você quer fazer.
+- Mantenha o foco na simplicidade e no minimalismo.
+- Veja a parte de [discussões](https://github.com/Navelogic/escreveaqui/discussions) para engajar em algum problema.
 
 ---
 
@@ -17,8 +18,9 @@ Queremos manter o projeto simples, organizado e acessível para todos.
 
 Antes de abrir uma issue:
 
-1. Verifique se o bug já foi reportado
-2. Certifique-se de que está usando a versão mais recente
+1. Verifique se o bug já foi reportado.
+2. Verifique se ele está sendo discutido.
+3. Certifique-se de que está usando a versão mais recente (dev).
 
 Ao abrir uma issue, inclua:
 
@@ -65,7 +67,15 @@ cd escreveaqui
 
 Consulte o [README](README.md) para instalar as dependências e configurar as variáveis de ambiente.
 
-### 4. Crie uma branch
+### 4. Crie uma branch a partir da dev.
+
+Antes de criar a branch, certifique-se de estar na dev e de possuir a versão mais atualizada dela:
+
+```
+git checkout dev
+git pull origin dev
+```
+Em seguida, crie uma nova branch a partir da dev:
 
 Use o padrão:
 
@@ -75,11 +85,13 @@ fix/nome-do-bug
 docs/descricao
 refactor/descricao
 ```
+Prefira nomes curtos, descritivos e em `kebab-case`.
 
-Exemplo:
-
-```bash
+```
 git checkout -b feature/dark-mode
+git checkout -b fix/login-error
+git checkout -b docs/update-readme
+git checkout -b refactor/user-service
 ```
 
 ---
@@ -95,6 +107,15 @@ docs: atualiza README com variáveis de ambiente
 refactor: simplifica lógica do UpsertNotaService
 test: adiciona testes para o endpoint de leitura
 chore: atualiza dependências do frontend
+
+OU
+
+[feat] adiciona modo escuro
+[fix] corrige erro de validação no slug
+[docs] atualiza README com variáveis de ambiente
+[refactor] simplifica lógica do UpsertNotaService
+[test] adiciona testes para o endpoint de leitura
+[chore] atualiza dependências do frontend
 ```
 
 ---
@@ -133,7 +154,7 @@ Antes de abrir um PR:
 
 - [ ] Código compila sem erros
 - [ ] Não há erros de lint (`npm run lint` no frontend)
-- [ ] Branch está atualizada com `main`
+- [ ] Branch está atualizada com `dev`
 - [ ] Descrição clara do que foi feito e por quê
 
 Template sugerido:
@@ -155,7 +176,7 @@ Template sugerido:
 O Escreve Aqui é:
 
 - Minimalista
-- Sem autenticação
+- Sem autenticação*
 - Sem anúncios
 - Sem rastreamento
 
