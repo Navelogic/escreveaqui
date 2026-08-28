@@ -92,7 +92,8 @@ export default function Home() {
         <ul>
           <li>Não solicitamos informações pessoais como nome, email ou telefone.</li>
           <li>O conteúdo das notas é armazenado associado apenas à URL que você criou.</li>
-          <li>Qualquer pessoa com acesso à URL da nota poderá ler e editar seu conteúdo.</li>
+          <li>Qualquer pessoa com acesso à URL da nota poderá ler e editar seu conteúdo, a menos que você defina um segredo para ela.</li>
+          <li>O segredo é guardado apenas como hash e não pode ser recuperado se você esquecê-lo.</li>
           <li>Recomendamos não armazenar informações sensíveis (senhas, dados bancários, etc).</li>
         </ul>
       </Modal>
