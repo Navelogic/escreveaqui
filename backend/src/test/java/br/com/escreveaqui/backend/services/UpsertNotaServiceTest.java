@@ -28,7 +28,7 @@ class UpsertNotaServiceTest {
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        upsertNotaService = new UpsertNotaService(notaRepository, sseService, meterRegistry);
+        upsertNotaService = new UpsertNotaService(notaRepository, sseService, new NotaSecretService(notaRepository), meterRegistry);
     }
 
     @Test
@@ -38,11 +38,11 @@ class UpsertNotaServiceTest {
         String sanitizedSlug = "minha-nova-nota";
         String content = "Conteúdo";
 
-        when(notaRepository.upsert(sanitizedSlug, content)).thenReturn(true);
+        when(notaRepository.upsert(sanitizedSlug, content, null)).thenReturn(true);
 
         upsertNotaService.execute(rawSlug, content);
 
-        verify(notaRepository).upsert(sanitizedSlug, content);
+        verify(notaRepository).upsert(sanitizedSlug, content, null);
     }
 
     @Test
@@ -52,10 +52,10 @@ class UpsertNotaServiceTest {
         String sanitizedSlug = "nota-existente";
         String content = "Conteúdo Atualizado";
 
-        when(notaRepository.upsert(sanitizedSlug, content)).thenReturn(false);
+        when(notaRepository.upsert(sanitizedSlug, content, null)).thenReturn(false);
 
         upsertNotaService.execute(rawSlug, content);
 
-        verify(notaRepository).upsert(sanitizedSlug, content);
+        verify(notaRepository).upsert(sanitizedSlug, content, null);
     }
 }

@@ -5,5 +5,6 @@ import java.time.OffsetDateTime;
 public record NotaResponseDTO(
         String slug,
         String content,
+        boolean hasSecret,
         OffsetDateTime updatedAt
 ) {}

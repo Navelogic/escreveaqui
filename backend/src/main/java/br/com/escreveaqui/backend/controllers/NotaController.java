@@ -2,6 +2,8 @@ package br.com.escreveaqui.backend.controllers;
 
 import br.com.escreveaqui.backend.dtos.NotaRequestDTO;
 import br.com.escreveaqui.backend.dtos.NotaResponseDTO;
+import br.com.escreveaqui.backend.exceptions.SegredoInvalidoException;
+import br.com.escreveaqui.backend.services.NotaSecretService;
 import br.com.escreveaqui.backend.services.ReadNotaService;
 import br.com.escreveaqui.backend.services.SseService;
 import br.com.escreveaqui.backend.services.UpsertNotaService;
@@ -18,23 +20,31 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 @RestController
 @RequestMapping("/api/v1/notes")
 @RequiredArgsConstructor
 @Validated
 public class NotaController {
 
+    public static final String SECRET_HEADER = "X-Nota-Secret";
+
     private final ReadNotaService readService;
     private final UpsertNotaService upsertService;
+    private final NotaSecretService secretService;
     private final SseService sseService;
 
     @GetMapping(value = "/{slug}", produces = "application/json")
     public ResponseEntity<NotaResponseDTO> read(
             @PathVariable @Pattern(regexp = SlugUtils.SLUG_REGEX) String slug,
+            @RequestHeader(value = SECRET_HEADER, required = false) String secret,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        NotaResponseDTO nota = readService.execute(slug);
+        NotaResponseDTO nota = readService.execute(slug, decodeSecret(secret));
         String etag = "W/\"" + nota.updatedAt().toInstant().toEpochMilli() + "\"";
 
         response.setHeader("ETag", etag);
@@ -47,8 +57,16 @@ public class NotaController {
 
     @GetMapping(value = "/{slug}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter stream(
-            @PathVariable @Pattern(regexp = SlugUtils.SLUG_REGEX) String slug
-    ) {
+            @PathVariable @Pattern(regexp = SlugUtils.SLUG_REGEX) String slug,
+            @RequestParam(required = false) String secret,
+            HttpServletResponse response
+    ) throws IOException {
+        try {
+            secretService.verify(slug, decodeSecret(secret));
+        } catch (SegredoInvalidoException e) {
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Nota protegida");
+            return null;
+        }
         return sseService.subscribe(slug);
     }
 
@@ -59,7 +77,18 @@ public class NotaController {
             @RequestBody
             @Valid NotaRequestDTO request
     ) {
-        upsertService.execute(slug, request.content());
+        upsertService.execute(slug, request.content(), request.secret());
         return ResponseEntity.noContent().build();
+    }
+
+    private static String decodeSecret(String encoded) {
+        if (encoded == null || encoded.isBlank()) {
+            return null;
+        }
+        try {
+            return new String(Base64.getDecoder().decode(encoded), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

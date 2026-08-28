@@ -7,6 +7,7 @@ public record Nota(
         UUID id,
         String slug,
         String content,
+        String secretHash,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
 ) {}

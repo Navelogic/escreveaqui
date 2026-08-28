@@ -1,7 +1,9 @@
 package br.com.escreveaqui.backend.controllers;
 
 import br.com.escreveaqui.backend.dtos.NotaResponseDTO;
+import br.com.escreveaqui.backend.services.NotaSecretService;
 import br.com.escreveaqui.backend.services.ReadNotaService;
+import br.com.escreveaqui.backend.services.SseService;
 import br.com.escreveaqui.backend.services.UpsertNotaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +37,12 @@ class NotaControllerTest {
     @Mock
     private UpsertNotaService upsertService;
 
+    @Mock
+    private NotaSecretService secretService;
+
+    @Mock
+    private SseService sseService;
+
     @InjectMocks
     private NotaController notaController;
 
@@ -48,9 +56,9 @@ class NotaControllerTest {
     void deveRetornarNotaComETag() throws Exception {
         String slug = "minha-nota";
         OffsetDateTime now = OffsetDateTime.now();
-        NotaResponseDTO responseDTO = new NotaResponseDTO(slug, "Texto da nota", now);
+        NotaResponseDTO responseDTO = new NotaResponseDTO(slug, "Texto da nota", false, now);
 
-        when(readService.execute(slug)).thenReturn(responseDTO);
+        when(readService.execute(slug, null)).thenReturn(responseDTO);
 
         mockMvc.perform(get("/api/v1/notes/{slug}", slug))
                 .andExpect(status().isOk())
@@ -59,22 +67,22 @@ class NotaControllerTest {
                 .andExpect(header().exists("ETag"))
                 .andExpect(header().string("Cache-Control", "no-cache"));
 
-        verify(readService).execute(slug);
+        verify(readService).execute(slug, null);
     }
 
     @Test
     @DisplayName("GET /api/v1/notes/{slug} deve repassar o slug para o service de leitura")
     void deveRepassarSlugParaService() throws Exception {
         String rawSlug = "Café & Leite";
-        NotaResponseDTO responseDTO = new NotaResponseDTO("cafe-leite", "Conteúdo", OffsetDateTime.now());
+        NotaResponseDTO responseDTO = new NotaResponseDTO("cafe-leite", "Conteúdo", false, OffsetDateTime.now());
 
-        when(readService.execute(rawSlug)).thenReturn(responseDTO);
+        when(readService.execute(rawSlug, null)).thenReturn(responseDTO);
 
         mockMvc.perform(get("/api/v1/notes/{slug}", rawSlug))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.slug").value("cafe-leite"));
 
-        verify(readService).execute(rawSlug);
+        verify(readService).execute(rawSlug, null);
     }
 
     @Test
@@ -92,6 +100,6 @@ class NotaControllerTest {
                         .content(jsonBody))
                 .andExpect(status().isNoContent());
 
-        verify(upsertService).execute(slug, "Novo conteúdo da nota");
+        verify(upsertService).execute(slug, "Novo conteúdo da nota", null);
     }
 }

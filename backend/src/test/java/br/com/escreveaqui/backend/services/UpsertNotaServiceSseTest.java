@@ -28,7 +28,7 @@ class UpsertNotaServiceSseTest {
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        upsertNotaService = new UpsertNotaService(notaRepository, sseService, meterRegistry);
+        upsertNotaService = new UpsertNotaService(notaRepository, sseService, new NotaSecretService(notaRepository), meterRegistry);
     }
 
     @Test
@@ -38,11 +38,11 @@ class UpsertNotaServiceSseTest {
         String sanitizedSlug = "nota-em-tempo-real";
         String content = "Conteudo transmitido via SSE";
 
-        when(notaRepository.upsert(sanitizedSlug, content)).thenReturn(true);
+        when(notaRepository.upsert(sanitizedSlug, content, null)).thenReturn(true);
 
         upsertNotaService.execute(rawSlug, content);
 
-        verify(notaRepository).upsert(sanitizedSlug, content);
+        verify(notaRepository).upsert(sanitizedSlug, content, null);
         verify(sseService).notify(sanitizedSlug, content);
     }
 }

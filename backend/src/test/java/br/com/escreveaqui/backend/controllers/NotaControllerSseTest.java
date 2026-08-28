@@ -1,5 +1,6 @@
 package br.com.escreveaqui.backend.controllers;
 
+import br.com.escreveaqui.backend.services.NotaSecretService;
 import br.com.escreveaqui.backend.services.ReadNotaService;
 import br.com.escreveaqui.backend.services.SseService;
 import br.com.escreveaqui.backend.services.UpsertNotaService;
@@ -31,6 +32,9 @@ class NotaControllerSseTest {
 
     @Mock
     private UpsertNotaService upsertService;
+
+    @Mock
+    private NotaSecretService secretService;
 
     @Mock
     private SseService sseService;

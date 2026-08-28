@@ -6,7 +6,6 @@ import br.com.escreveaqui.backend.utils.SlugUtils;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +16,13 @@ import java.time.OffsetDateTime;
 public class ReadNotaService {
 
     private final NotaRepository notaRepository;
+    private final NotaSecretService secretService;
     private final Counter hitCounter;
     private final Counter missCounter;
 
-    public ReadNotaService(NotaRepository notaRepository, MeterRegistry registry) {
+    public ReadNotaService(NotaRepository notaRepository, NotaSecretService secretService, MeterRegistry registry) {
         this.notaRepository = notaRepository;
+        this.secretService = secretService;
         this.hitCounter  = Counter.builder("notes.read")
                 .tag("result", "hit")
                 .description("Notas encontradas no banco")
@@ -32,20 +33,24 @@ public class ReadNotaService {
                 .register(registry);
     }
 
-    @Cacheable(value = "notas", key = "T(br.com.escreveaqui.backend.utils.SlugUtils).format(#slug)")
-    @Transactional(readOnly = true)
     public NotaResponseDTO execute(String slug) {
+        return execute(slug, null);
+    }
+
+    @Transactional(readOnly = true)
+    public NotaResponseDTO execute(String slug, String secret) {
         String safeSlug = SlugUtils.format(slug);
         return notaRepository.findBySlug(safeSlug)
                 .map(nota -> {
+                    secretService.check(nota.secretHash(), secret);
                     hitCounter.increment();
                     log.debug("Nota encontrada: slug='{}'", safeSlug);
-                    return new NotaResponseDTO(nota.slug(), nota.content(), nota.updatedAt());
+                    return new NotaResponseDTO(nota.slug(), nota.content(), nota.secretHash() != null, nota.updatedAt());
                 })
                 .orElseGet(() -> {
                     missCounter.increment();
                     log.debug("Nota não encontrada, retornando vazia: slug='{}'", safeSlug);
-                    return new NotaResponseDTO(safeSlug, "", OffsetDateTime.now());
+                    return new NotaResponseDTO(safeSlug, "", false, OffsetDateTime.now());
                 });
     }
 }

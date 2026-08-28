@@ -32,7 +32,7 @@ class ReadNotaServiceTest {
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        readNotaService = new ReadNotaService(notaRepository, meterRegistry);
+        readNotaService = new ReadNotaService(notaRepository, new NotaSecretService(notaRepository), meterRegistry);
     }
 
     @Test
@@ -40,7 +40,7 @@ class ReadNotaServiceTest {
     void deveBuscarNotaSanitizandoSlug() {
         String rawSlug = "Minha Nota!";
         String sanitizedSlug = "minha-nota";
-        Nota nota = new Nota(UUID.randomUUID(), sanitizedSlug, "Conteúdo da nota", OffsetDateTime.now(), OffsetDateTime.now());
+        Nota nota = new Nota(UUID.randomUUID(), sanitizedSlug, "Conteúdo da nota", null, OffsetDateTime.now(), OffsetDateTime.now());
 
         when(notaRepository.findBySlug(sanitizedSlug)).thenReturn(Optional.of(nota));
 

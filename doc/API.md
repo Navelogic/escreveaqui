@@ -41,12 +41,19 @@ Retorna o conteúdo de uma nota pelo slug.
 |---|---|---|---|
 | `slug` | string | sim | Identificador da nota |
 
+**Cabeçalhos:**
+
+| Cabeçalho | Obrigatório | Descrição |
+|---|---|---|
+| `X-Nota-Secret` | só em nota protegida | Segredo da nota em Base64 (UTF-8) |
+
 **Resposta de sucesso — `200 OK`:**
 
 ```json
 {
   "slug": "minha-nota",
   "content": "Conteúdo da nota aqui.",
+  "hasSecret": false,
   "updatedAt": "2025-04-18T14:30:00Z"
 }
 ```
@@ -80,13 +87,15 @@ Cria ou atualiza uma nota. A operação é idempotente.
 
 ```json
 {
-  "content": "Conteúdo da nota."
+  "content": "Conteúdo da nota.",
+  "secret": "minha-senha"
 }
 ```
 
 | Campo | Tipo | Obrigatório | Limite |
 |---|---|---|---|
 | `content` | string | não | máx. 1.000.000 caracteres (~1 MB) |
+| `secret` | string | só em nota protegida | máx. 128 caracteres |
 
 **Resposta de sucesso — `204 No Content`**
 
@@ -132,6 +141,7 @@ Todos os erros seguem o formato [RFC 9457 (Problem Details)](https://www.rfc-edi
 | Status | Situação |
 |---|---|
 | `400` | Slug inválido ou corpo da requisição fora dos limites |
+| `401` | Nota protegida: segredo ausente ou incorreto |
 | `409` | Conflito de escrita simultânea ou violação de unicidade |
 | `500` | Erro interno inesperado |
 
@@ -174,3 +184,21 @@ curl -X PUT http://localhost:8080/api/v1/notes/minha-nota \
 ```bash
 curl http://localhost:8080/api/v1/notes/minha-nota
 ```
+
+**Ler uma nota protegida:**
+
+```bash
+curl http://localhost:8080/api/v1/notes/minha-nota   -H "X-Nota-Secret: $(printf 'minha-senha' | base64)"
+```
+
+---
+
+## Segredo da Nota
+
+Uma nota pode receber um segredo opcional, útil quando o slug é curto e fácil de adivinhar.
+
+- O segredo é definido na primeira vez que um `PUT` envia o campo `secret`; depois disso ele **não pode ser alterado nem recuperado**.
+- Só o hash BCrypt do segredo é armazenado (coluna `notes.secret_hash`).
+- Enquanto a nota tiver segredo, `GET`, `PUT` e o stream SSE exigem o segredo correto, sob pena de `401 Unauthorized`.
+- `GET /{slug}/stream` recebe o segredo como query param `?secret=` em Base64, porque `EventSource` não envia cabeçalhos.
+- Notas inexistentes continuam retornando `200 OK` com conteúdo vazio, então o `401` só revela que aquele slug já está em uso.

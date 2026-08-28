@@ -1,6 +1,7 @@
 package br.com.escreveaqui.backend.repositories;
 
 import br.com.escreveaqui.backend.models.Nota;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,7 @@ public class NotaRepository {
             rs.getObject("id", UUID.class),
             rs.getString("slug"),
             rs.getString("content"),
+            rs.getString("secret_hash"),
             rs.getObject("created_at", OffsetDateTime.class),
             rs.getObject("updated_at", OffsetDateTime.class)
     );
@@ -27,22 +29,28 @@ public class NotaRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Cacheable("notas")
     public Optional<Nota> findBySlug(String slug) {
         List<Nota> result = jdbcTemplate.query(
-                "SELECT id, slug, content, created_at, updated_at FROM notes WHERE slug = ?",
+                "SELECT id, slug, content, secret_hash, created_at, updated_at FROM notes WHERE slug = ?",
                 NOTA_ROW_MAPPER, slug);
         return result.stream().findFirst();
     }
 
     public boolean upsert(String slug, String content) {
+        return upsert(slug, content, null);
+    }
+
+    public boolean upsert(String slug, String content, String secretHash) {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject("""
-                INSERT INTO notes (id, slug, content)
-                VALUES (?, ?, ?)
+                INSERT INTO notes (id, slug, content, secret_hash)
+                VALUES (?, ?, ?, ?)
                 ON CONFLICT (slug) DO UPDATE
                     SET content = EXCLUDED.content,
+                        secret_hash = COALESCE(notes.secret_hash, EXCLUDED.secret_hash),
                         updated_at = now()
                 RETURNING (xmax = 0) AS inserted
-                """, Boolean.class, UUID.randomUUID(), slug, content));
+                """, Boolean.class, UUID.randomUUID(), slug, content, secretHash));
     }
 
     public int deleteOldNotes(OffsetDateTime cutoff) {
