@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public final class SlugUtils {
 
+    public static final String SLUG_REGEX = "^[A-Za-z0-9_\\s-]+$";
+
     private static final Pattern ACCENT_PATTERN = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 
     private SlugUtils() {

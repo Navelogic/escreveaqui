@@ -65,33 +65,34 @@ src/
 | `/` | `Home` | Página inicial — criar ou acessar uma nota |
 | `/:key` | `Editor` | Editor da nota identificada pelo slug `key` |
 
-### Fluxo de auto-save
+### Fluxo de auto-save e sincronização
 
 ```
 Usuário digita
       │
       ▼
 setText(newText)        ← atualiza estado local imediatamente
-setIsTyping(true)
+setIsTyping(true)        ← também espelhado em isTypingRef (ver abaixo)
       │
       ▼
 debounce(1000ms)        ← aguarda 1s de inatividade
       │
       ▼
-PUT /api/v1/notes/:slug ← salva no backend
+PUT /api/v1/notes/:slug ← salva no backend e dispara evento SSE (ver Tempo real)
       │
       ▼
 setTimeout(2000ms)      ← após 2s sem digitar, isTyping = false
-      │
-      ▼
-polling ativo           ← GET a cada 2s para sincronizar com outros usuários
-                           (pausa quando a aba fica em segundo plano;
-                            busca imediata ao voltar o foco — Page Visibility API)
 ```
 
-Cada GET envia `If-None-Match` com o ETag da última resposta (derivado de
-`updatedAt`); se a nota não mudou, o backend responde `304 Not Modified` sem
-corpo, economizando banda no ciclo de polling.
+A busca inicial do conteúdo (`GET /:slug`) acontece uma única vez, ao montar o
+editor ou trocar de slug — não existe mais polling periódico. Atualizações de
+outras sessões chegam via SSE (ver [Tempo real (SSE)](#tempo-real-sse)).
+
+`isTyping` é replicado num `useRef` (`isTypingRef`) lido pelo listener de SSE,
+para que o efeito da conexão SSE dependa só de `key` e não seja recriado a cada
+tecla digitada — diferente do polling antigo, que recriava o `setInterval` e o
+`AbortController` a cada keystroke por depender de `text` no array de
+dependências.
 
 ### Cursor brasileiro
 
@@ -118,7 +119,8 @@ br.com.escreveaqui.backend/
 │   └── NotaController.java     # Endpoints REST (/api/v1/notes)
 ├── services/
 │   ├── ReadNotaService.java    # Leitura com @Cacheable
-│   ├── UpsertNotaService.java  # Escrita com @CacheEvict
+│   ├── UpsertNotaService.java  # Escrita com @CacheEvict, notifica SseService
+│   ├── SseService.java         # Gerencia conexões SSE e notifica atualizações
 │   └── DeleteNotaService.java  # Limpeza agendada com @CacheEvict
 ├── repositories/
 │   └── NotaRepository.java     # JdbcTemplate — SQL Postgres direto (findBySlug, upsert, deleteOldNotes)
@@ -176,6 +178,10 @@ PUT /api/v1/notes/{slug}
   @CacheEvict — invalida cache do slug
          │
          ▼
+  SseService.notify(slug, content) — envia o novo conteúdo
+  para os clientes inscritos no stream desse slug
+         │
+         ▼
   Retorna 204 No Content
 ```
 
@@ -183,6 +189,54 @@ O upsert é uma única query (`NotaRepository.upsert`, via `JdbcTemplate`), em v
 SELECT seguido de INSERT/UPDATE que o JPA fazia — isso elimina a janela de corrida
 entre leitura e escrita, então não há mais necessidade de optimistic locking (ver
 [Concorrência](#concorrência)).
+
+### Tempo real (SSE)
+
+```
+GET /api/v1/notes/{slug}/stream
+         │
+         ▼
+  Validação do slug (regex @Pattern, mesmo SlugUtils.SLUG_REGEX do GET/PUT)
+         │
+         ▼
+  SseService.subscribe(slug)
+         │
+         ▼
+  Cria SseEmitter(timeout=0L) — sem expiração pelo servidor
+         │
+         ▼
+  Adiciona à lista de emitters do slug
+  (Map<String, List<SseEmitter>> em memória, thread-safe)
+         │
+         ▼
+  Retorna a conexão HTTP aberta (text/event-stream)
+```
+
+Quando outra sessão salva a nota (`PUT`), `UpsertNotaService` chama
+`SseService.notify(slug, content)` logo após o upsert e o `@CacheEvict`,
+transmitindo o conteúdo recém-salvo (não relido do banco) como um evento
+`nota-update` para cada `SseEmitter` inscrito naquele slug.
+
+Cada emitter registra callbacks `onCompletion`, `onTimeout` e `onError` que o
+removem da lista ao desconectar, evitando vazamento de memória. Se o envio a
+um emitter falhar (cliente já desconectado), ele também é removido na hora.
+
+No frontend, o editor abre uma única conexão `EventSource` por slug (via
+`useEffect` com `[key]` como dependência) e aplica o conteúdo recebido apenas
+se o usuário não estiver digitando no momento (`isTypingRef.current`). Isso
+substituiu o polling de 2 em 2 segundos que existia antes.
+
+**Limitações conhecidas:**
+
+- O estado dos emitters é local ao processo (`ConcurrentHashMap` em memória).
+  Se o backend rodar em múltiplas instâncias sem um load balancer com sticky
+  sessions, uma escrita atendida pela instância A não chega aos clientes
+  conectados à instância B. Escalar isso exigiria um mecanismo de fan-out
+  entre instâncias (pub/sub via Redis, por exemplo — mesma lógica já discutida
+  em [Por que Caffeine e não Redis?](#por-que-caffeine-e-não-redis)).
+- Não há replay de eventos perdidos: o `EventSource` do navegador reconecta
+  sozinho após queda de conexão, mas eventos disparados durante a
+  desconexão não são reenviados nem historizados no servidor.
 
 ### Limpeza automática
 
@@ -235,7 +289,9 @@ inicialização (substituiu o `ddl-auto` do Hibernate).
 | Capacidade máxima | 500 entradas | Baixo footprint de memória |
 | Invalidação | Por chave no PUT, total no cleanup | Dado fresco imediatamente após salvamento |
 
-> O TTL de 30s existe como rede de segurança. Na prática, o `@CacheEvict` no `PUT` invalida o cache da nota imediatamente após cada salvamento, então usuários que estão editando a mesma nota recebem dados atualizados a cada ciclo de polling (2s).
+> O TTL de 30s existe como rede de segurança. Na prática, o `@CacheEvict` no `PUT` invalida o cache da nota 
+> imediatamente após cada salvamento. A sincronização entre sessões abertas na mesma nota não depende desse cache: 
+> é feita via SSE (ver [Tempo real (SSE)](#tempo-real-sse)), não por releitura periódica.
 
 ---
 
@@ -247,6 +303,12 @@ nota" que exigiria optimistic locking: duas escritas concorrentes no mesmo slug
 serializam no próprio `ON CONFLICT`, e a que for aplicada por último vence
 (last-write-wins), sem lançar erro. Não há mais handler de `409 Conflict` por
 conflito de edição — nesse fluxo, não há mais o que conflitar.
+
+O `GlobalExceptionHandler` ainda trata `DataIntegrityViolationException` com
+`409`, mas isso é apenas uma rede de segurança genérica, a única constraint de
+unicidade da tabela (`slug`) já é resolvida pelo `ON CONFLICT` antes de chegar
+a violar o banco, então esse handler não é mais exercitado pelo fluxo normal
+de escrita.
 
 ---
 

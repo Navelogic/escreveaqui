@@ -53,6 +53,12 @@ Retorna o conteúdo de uma nota pelo slug.
 
 > **Nota:** se o slug não existir, o endpoint retorna `200 OK` com `content` vazio e `updatedAt` igual ao momento da requisição. Isso permite que o frontend trate "nota nova" e "nota existente" de forma transparente.
 
+A resposta inclui os headers `ETag` (derivado de `updatedAt`) e
+`Cache-Control: no-cache`. Se o cliente reenviar `If-None-Match` com esse ETag,
+o backend responde `304 Not Modified` sem corpo. Como o frontend agora faz uma
+única busca por slug em vez de polling periódico, isso beneficia principalmente
+recarregamentos de página, não a sincronização em tempo real (feita via SSE).
+
 **Resposta de slug inválido — `400 Bad Request`:**
 
 ```json
@@ -63,6 +69,39 @@ Retorna o conteúdo de uma nota pelo slug.
   "detail": "read.slug: deve corresponder a \"^[A-Za-z0-9_\\s-]+$\""
 }
 ```
+
+---
+
+### GET `/api/v1/notes/{slug}/stream`
+
+Abre uma conexão [Server-Sent Events](https://developer.mozilla.org/docs/Web/API/Server-sent_events)
+para receber atualizações em tempo real de uma nota, sem precisar de polling.
+
+**Parâmetros de rota:**
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|---|---|---|---|
+| `slug` | string | sim | Identificador da nota |
+
+**Resposta de sucesso — `200 OK`, `Content-Type: text/event-stream`:**
+
+A conexão fica aberta indefinidamente (sem timeout no servidor). Cada evento
+enviado tem o nome `nota-update` e o `data` é o conteúdo atualizado da nota em
+texto puro (não é JSON):
+
+```
+event: nota-update
+data: Conteúdo atualizado da nota.
+
+```
+
+Um evento é disparado para todos os clientes inscritos naquele slug sempre que
+alguém salva a nota via `PUT`. Ver [Tempo real (SSE)](ARCHITECTURE.md#tempo-real-sse)
+na arquitetura para detalhes de implementação e limitações conhecidas.
+
+> **Nota:** este endpoint só transmite mudanças a partir do momento em que a
+> conexão é aberta. Para carregar o conteúdo atual da nota, use o `GET /{slug}`
+> normal antes de abrir o stream.
 
 ---
 
@@ -103,16 +142,11 @@ Sem corpo de resposta.
 }
 ```
 
-**Resposta de conflito de escrita simultânea — `409 Conflict`:**
-
-```json
-{
-  "type": "about:blank",
-  "title": "Conflito de edição",
-  "status": 409,
-  "detail": "A nota foi modificada por outra sessão. Tente novamente."
-}
-```
+> **Escritas concorrentes:** o upsert é atômico (`INSERT ... ON CONFLICT DO UPDATE`
+> em uma única query), então duas escritas simultâneas no mesmo slug nunca geram
+> erro. A última a ser processada pelo banco vence (last-write-wins). Não existe
+> resposta `409` para esse caso. Ver [Concorrência](ARCHITECTURE.md#concorrência)
+> na arquitetura.
 
 ---
 
@@ -132,7 +166,6 @@ Todos os erros seguem o formato [RFC 9457 (Problem Details)](https://www.rfc-edi
 | Status | Situação |
 |---|---|
 | `400` | Slug inválido ou corpo da requisição fora dos limites |
-| `409` | Conflito de escrita simultânea ou violação de unicidade |
 | `500` | Erro interno inesperado |
 
 ---

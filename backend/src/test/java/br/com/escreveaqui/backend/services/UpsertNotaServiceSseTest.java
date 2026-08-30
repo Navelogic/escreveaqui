@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UpsertNotaServiceTest {
+class UpsertNotaServiceSseTest {
 
     @Mock
     private NotaRepository notaRepository;
@@ -32,30 +32,17 @@ class UpsertNotaServiceTest {
     }
 
     @Test
-    @DisplayName("Deve salvar a nota sanitizando o slug informado ao criar nova nota")
-    void deveSalvarNotaSanitizandoSlugNovaNota() {
-        String rawSlug = "Minha Nova Nota!";
-        String sanitizedSlug = "minha-nova-nota";
-        String content = "Conteúdo";
+    @DisplayName("Deve notificar inscritos SSE ao criar ou atualizar uma nota")
+    void deveNotificarInscritosSseAoSalvar() {
+        String rawSlug = "Nota em Tempo Real";
+        String sanitizedSlug = "nota-em-tempo-real";
+        String content = "Conteudo transmitido via SSE";
 
         when(notaRepository.upsert(sanitizedSlug, content)).thenReturn(true);
 
         upsertNotaService.execute(rawSlug, content);
 
         verify(notaRepository).upsert(sanitizedSlug, content);
-    }
-
-    @Test
-    @DisplayName("Deve atualizar a nota sanitizando o slug informado se ela já existir")
-    void deveAtualizarNotaSanitizandoSlugExistente() {
-        String rawSlug = "Nota Existente";
-        String sanitizedSlug = "nota-existente";
-        String content = "Conteúdo Atualizado";
-
-        when(notaRepository.upsert(sanitizedSlug, content)).thenReturn(false);
-
-        upsertNotaService.execute(rawSlug, content);
-
-        verify(notaRepository).upsert(sanitizedSlug, content);
+        verify(sseService).notify(sanitizedSlug, content);
     }
 }
