@@ -67,13 +67,3 @@ Explique se necessário.
 ## 📷 Contexto adicional
 
 Adicione exemplos, prints, links ou referências que ajudem a entender a proposta.
-
----
-
-## 🧠 Observação Importante
-
-O Escreve Aqui é:
-
-- Minimalista
-- Sem cadastro
-- Sem anúncios
