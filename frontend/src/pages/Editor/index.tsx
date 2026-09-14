@@ -3,8 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { notaService } from "@/services/notaService"
 import { formatSlug } from "@/lib/utils"
-import debounce from "lodash.debounce"
-import type { DebouncedFunc } from "lodash"
+import { debounce } from "@/lib/debounce"
 import { Check, LoaderCircle, X } from "lucide-react"
 
 const BR_COLORS = ["#009c3b", "#ffdf00", "#002776"]
@@ -90,7 +89,7 @@ export default function Editor() {
     }
   }, [key])
 
-  const saveToBackend: DebouncedFunc<(slug: string, content: string) => void> = useMemo(
+  const saveToBackend = useMemo(
     () =>
       debounce((slug: string, content: string) => {
         notaService
